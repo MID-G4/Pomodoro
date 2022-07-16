@@ -69,6 +69,7 @@ class Task:
         self.completed_tasks = {}
 
     def add_task(self):
+        """add a task to the list of tasks"""
         self.task_number += 1
         task_desc = input("Please enter the task's description")
         self.added_tasks[self.task_number] = f'{task_desc}'
@@ -76,12 +77,15 @@ class Task:
         self.list_tasks()
 
     def complete_task(self):
+        """add a task to the completed list of tasks"""
         self.completed_tasks[self.task_number] = self.added_tasks.get(self.task_number)
 
     def delete_task(self):
+        """delete a task for the list of added tasks"""
         del self.added_tasks[self.task_number]
 
     def update_added_tasks(self, task):
+        """add a task to the completed list and delete it from the added list"""
         self.complete_task()
         self.delete_task()
 
