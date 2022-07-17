@@ -57,13 +57,17 @@ class ListOfOptions:
         '''
         print('''
             ADD New Task:
-            R ) To return to main menu
+            R ) To return to main menu 
         ''')
 
     def task_after_added(self):
         print('''
-            ADD New Task:
-            R ) To return to main menu
+        
+            Task Added Successfully
+
+            V) View all the Tasks
+            R ) To return to previse menu
+
         ''')
 
     def view_list_of_tasks(self):
@@ -76,17 +80,26 @@ class ListOfOptions:
         R) Return to main menu
         ''')
 
-    def start_pomodoro(self):
+    def select_existing_task(self):
+        print(
+            '''
+        )> Enter the task number to start.
+        R)> Return to main menu.
+            '''
+        )
+
+    def start_pomodoro(self, opt_func):
         '''
         on the second screen after select Start pomodoro
         '''
         print('''
-        To start Pomodoro:
-        Time: {} minutes / long break {} minutes /short break {} minutes
-        A) add task to work on
-        S) select existing task
-        R) return to main menu
-        ''')
+        To start Pomodoro:''' +
+              opt_func +
+              '''
+              A) add task to work on
+              S) select existing task
+              R) return to main menu
+              ''')
 
     def show_default_value(self, p, l, sh):
         '''
@@ -95,6 +108,10 @@ class ListOfOptions:
         print('''
         Time: {} minutes / long break {} minutes /short break {} minutes
         '''.format(p, l, sh))
+        text = '''
+        Time: {} minutes / long break {} minutes /short break {} minutes
+        '''.format(p, l, sh)
+        return text
 
     def no_tasks_founded(self):
         print('''
@@ -117,16 +134,17 @@ class ListOfOptions:
         )
 
     def started_timer(self):
-            print(
-                '''
-                P) to Pause the timer
-                SL) Start the long break
-                SH) Start the short break
-                M) return main menu
-                Q) return to select tasks
-                S) mark task as complete
-                '''
-            )
+        print(
+            '''
+            P) to Pause the timer
+            SL) Start the long break
+            SH) Start the short break
+            M) return main menu
+            Q) return to select tasks
+            S) mark task as complete
+            '''
+        )
+
 
 class Body:
     '''
@@ -141,27 +159,23 @@ class Body:
         self.short_break = 5
         self.long_break = 10
         self.options_list = ListOfOptions()
+        self.choice = ''
         # self.input_handles = InputHandler()
+
+    def input_massenger(self, msg):
+        choice = input(msg)
+        return choice
 
     def welcoming_main_menu(self):
         self.options_list.main_menu()
         self.user_input_main_menu()
 
+    # create new method that will handle the input itself and do the testing
+
     def user_input_main_menu(self):
         choice = input("Enter your choice:")
-        choice = choice.lower()
-        # self.O.main_menu()
-        if choice == 's':
-            pass
-        elif choice == 'a':
-            tasks = Task()
-            tasks.add_task()
-        elif choice == 'v':
-            pass
-        elif choice == 'st':
-            self.settings()
-        elif choice == 'q':
-            self.quit_pomodoro()
+        self.choice = choice.lower()
+        InputHandler().main_menu(self.choice)
 
     def timer(self, userIn=25):
         '''
@@ -236,21 +250,85 @@ class Body:
 
 
 class InputHandler(Body):
+
     def main_menu(self, choice):
+        tasks = Task()
         if choice == 's':
-            pass
+            self.start_pomodoro()
         elif choice == 'a':
-            tasks = Task()
             tasks.add_task()
         elif choice == 'v':
-            pass
+            tasks.list_tasks()
         elif choice == 'st':
             self.settings()
         elif choice == 'q':
             self.quit_pomodoro()
 
-    def select_task(self, task_number):
-        "select task to work on, to update or to mark it as completed"
+    def start_pomodoro(self):
+        '''select task to work on, to update or to mark it as completed'''
+
+        # default_values = ListOfOptions().show_default_value(self.pomo, self.long_break, self.short_break)
+        ListOfOptions().start_pomodoro(ListOfOptions().show_default_value(self.pomo, self.long_break, self.short_break))
+        choice = self.input_massenger('Enter your choice: ')
+
+        # flag = True
+        # while flag:
+        if choice.lower() == 'a':
+            # flag = False
+            # Task().add_task()
+            self.add_task()
+        if choice.lower() == 's':
+            # flag = False
+            if Task().task_number > 0:
+                # Task().list_tasks()
+                self.select_task()
+
+            # Task().select_task(choice)
+        if choice.lower() == 'r':
+            # flag = False
+            self.welcoming_main_menu()
+        else:
+            choice = self.input_massenger('Please make sure you entered valid input: Enter your choice: ')
+
+
+                if choice.lower() == 'v':
+                    Task().list_tasks()
+                if choice.lower() == 'r':
+                    self.welcoming_main_menu()
+                else:
+                    choice = self.input_massenger('Please make sure you entered valid input: Enter your choice: ')
+            if choice.lower() == 'r':
+                self.welcoming_main_menu()
+
+            else:
+                choice = self.input_massenger('Please make sure you entered valid input: Enter your choice: ')
+
+    def add_task(self):
+            ListOfOptions().task_add()
+            Task().add_task()
+            ListOfOptions().task_after_added()
+            # choice = self.input_massenger('Enter your choice: ')
+
+    def after_task_added(self,choice):
+        pass
+
+    def select_task(self):
+        ListOfOptions().show_default_value()
+        choice = self.input_massenger('Enter your choice: ')
+        if choice in Task().added_tasks:
+            Task().select_task(choice)
+            ListOfOptions().select_existing_task()
+        else:
+            ListOfOptions().no_tasks_founded()
+            choice = self.input_massenger('Enter your choice: ')
+
+    def no_tasks_founded(self):
+        pass
+
+    def task_in_progress(self):
+        pass
+
+    def break_in_progress(self):
         pass
 
 
@@ -286,6 +364,9 @@ class Task:
     def list_tasks(self):
         """ view the added task to the user """
         print(self.added_tasks)
+
+    def select_task(self, choice):
+        print('in select_task')
 
 
 class Display:
