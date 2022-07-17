@@ -127,21 +127,22 @@ class ListOfOptions:
             '''
             P) to Pause the timer
             S) Start working on the task again
-            SL) Start the long break
+            LB) Start the long break
             M) return main menu
-            Q) return to select task
+            R) return to select task
             '''
         )
 
-    def started_timer(self):
+    def task_in_progress(self):
         print(
             '''
+            
             P) to Pause the timer
-            SL) Start the long break
-            SH) Start the short break
+            LB) Start the long break
+            SB) Start the short break
             M) return main menu
-            Q) return to select tasks
-            S) mark task as complete
+            R) return to select task
+            C) select task as complete
             '''
         )
 
@@ -258,7 +259,8 @@ class InputHandler(Body):
         elif choice == 'a':
             tasks.add_task()
         elif choice == 'v':
-            tasks.list_tasks()
+            # tasks.list_tasks()
+            self.view_all_tasks()
         elif choice == 'st':
             self.settings()
         elif choice == 'q':
@@ -282,54 +284,118 @@ class InputHandler(Body):
             if Task().task_number > 0:
                 # Task().list_tasks()
                 self.select_task()
-
+            else:
+                self.no_tasks_founded()
             # Task().select_task(choice)
         if choice.lower() == 'r':
             # flag = False
             self.welcoming_main_menu()
-        else:
-            choice = self.input_massenger('Please make sure you entered valid input: Enter your choice: ')
+            # else:
+            #     choice = self.input_massenger('Please make sure you entered valid input: Enter your choice: ')
 
-
-                if choice.lower() == 'v':
-                    Task().list_tasks()
-                if choice.lower() == 'r':
-                    self.welcoming_main_menu()
-                else:
-                    choice = self.input_massenger('Please make sure you entered valid input: Enter your choice: ')
             if choice.lower() == 'r':
                 self.welcoming_main_menu()
-
+            else:
+                choice = self.input_massenger('Please make sure you entered valid input: Enter your choice: ')
+            if choice.lower() == 'r':
+                self.welcoming_main_menu()
             else:
                 choice = self.input_massenger('Please make sure you entered valid input: Enter your choice: ')
 
     def add_task(self):
-            ListOfOptions().task_add()
-            Task().add_task()
-            ListOfOptions().task_after_added()
-            # choice = self.input_massenger('Enter your choice: ')
+        ListOfOptions().task_add()
+        Task().add_task()
+        ListOfOptions().task_after_added()
+        self.after_task_added()
 
-    def after_task_added(self,choice):
-        pass
+    def after_task_added(self):
+        choice = self.input_massenger('Enter your choice: ')
+        if choice.lower() == 'v':
+            self.view_all_tasks()
+
+        if choice.lower() == 'r':
+            pass
+        # will be implemented soon for edge cases
+        # else:
+        #     choice = self.input_massenger('Please make sure you entered valid input: Enter your choice: ')
+        #
+
+    def view_all_tasks(self):
+        # ListOfOptions().show_default_value()
+
+        Task().list_tasks()
+        ListOfOptions().view_list_of_tasks()
+        choice = self.input_massenger('Enter your choice: ')
+        if int(choice.strip(" ")[0]) in Task().added_tasks and choice.strip(" ")[1].lower() == 'c':
+            # task completed
+            pass
+        if choice in Task().added_tasks:
+            # start the timer
+            # timer
+            task = Task().added_tasks
+            task = task[choice]
+            self.task_in_progress(task)
+
+        if choice.lower() == 'r':
+            self.welcoming_main_menu()
 
     def select_task(self):
         ListOfOptions().show_default_value()
+        Task().list_tasks()
         choice = self.input_massenger('Enter your choice: ')
         if choice in Task().added_tasks:
             Task().select_task(choice)
             ListOfOptions().select_existing_task()
-        else:
-            ListOfOptions().no_tasks_founded()
-            choice = self.input_massenger('Enter your choice: ')
 
     def no_tasks_founded(self):
-        pass
+        ListOfOptions().no_tasks_founded()
+        choice = self.input_massenger('Enter your choice: ')
+        if choice.lower() == "a":
+            self.add_task()
 
-    def task_in_progress(self):
-        pass
+    def task_in_progress(self, task):
+        print(task)
 
-    def break_in_progress(self):
-        pass
+        # timer progress
+        ListOfOptions().task_in_progress()
+        choice = self.input_massenger('Enter your choice: ')
+        if choice.lower() == 'p':
+            # pause timer
+            pass
+        if choice.lower() == 'lb':
+            self.short_Break()
+            self.break_in_progress(task)
+
+        if choice.lower() == 'sb':
+            self.short_Break()
+            self.break_in_progress(task)
+        if choice.lower() == 'm':
+            self.welcoming_main_menu()
+        if choice.lower() == 'r':
+            self.select_task()
+        if choice.lower() == 'c':
+            # mark task as complete
+            # Task().update_added_tasks(task)
+            Task().update_added_tasks('1')
+
+    def break_in_progress(self, task):
+        print(task)
+        # timer progress
+        ListOfOptions().task_in_progress()
+        choice = self.input_massenger('Enter your choice: ')
+
+        if choice.lower() == 'p':
+            # pause
+            pass
+        if choice.lower() == 's':
+            self.task_in_progress(task)
+        if choice.lower() == 'lb':
+            self.break_in_progress(task)
+            self.long_Break()
+        if choice.lower() == 'm':
+            self.welcoming_main_menu()
+        if choice.lower() == 'r':
+            self.select_task()
 
 
 class Task:
