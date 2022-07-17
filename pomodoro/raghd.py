@@ -215,7 +215,8 @@ class Body:
                 print(timer, end="\r")
                 time.sleep(1)
                 self.mins = self.mins + 1
-                print(self.mins, " minutes break completed.")
+            print(self.mins, " minutes break completed.")
+
             self.checkmark = 0
             print('The Break is over.')
 
@@ -230,7 +231,8 @@ class Body:
                 print(timer, end="\r")
                 time.sleep(60)
                 self.mins = self.mins + 1
-                print(self.mins, " minutes break completed.")
+            print(self.mins, " minutes break completed.")
+
             print('The Break is over.')
 
     def settings(self):
