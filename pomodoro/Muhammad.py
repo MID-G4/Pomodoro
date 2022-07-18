@@ -28,7 +28,7 @@ class ListOfOptions:
            Q) Quit Pomodoro
            ''')
 
-    def settings(self, p, sh, l):
+    def settings(self, l, sh, p):
         '''
         on settings screen to show all available options can the user interact with and take the default values from the
         main class body
@@ -104,7 +104,7 @@ class ListOfOptions:
               R) return to main menu
               ''')
 
-    def show_default_value(self, p, l, sh):
+    def show_default_value(self, l, sh, p):
         '''
         to show the time values in the app
         '''
@@ -156,9 +156,9 @@ class Body:
         self.checkmark = 0
         self.mins = 0
         self.total_mins = 0
-        self.pomo = 25
-        self.short_break = 5
-        self.long_break = 10
+        # self.pomo = 25
+        # self.short_break = 5
+        # self.long_break = 10
         self.options_list = ListOfOptions()
         self.choice = ''
         self.task_number = 0
@@ -219,7 +219,7 @@ class Body:
 
     def settings(self):
         """ Set the breaks """
-        self.options_list.settings(self.pomo, self.short_break, self.long_break)
+        self.options_list.settings(settings["long_break"], settings["short_break"], settings["pomo"])
         # print("Enter the set/tings symbol that you want to change")
         choice = input("Enter your choice:")
         choice = choice.lower()
@@ -230,12 +230,12 @@ class Body:
             userIn = int(input("Enter the break time :"))
             self.short_break = userIn
             settings["short_break"] = userIn
-            print(settings, "settingssettingssettingssettings")
             self.settings()
         elif choice == 'l':
             self.options_list.settings_selected('Long break ')
             userIn = int(input("Enter the break time :"))
-            self.long_break = userIn
+            # self.long_break = userIn
+            settings["long_break"] = userIn
             self.settings()
 
 
@@ -243,7 +243,8 @@ class Body:
             self.options_list.settings_selected('Pomodoro break ')
             userIn = int(input("Enter the pomodoro time : "))
             # self.timer(userIn)
-            self.pomo = userIn
+            # self.pomo = userIn
+            settings["pomo"] = userIn
             self.settings()
 
         elif choice == "r":
@@ -276,7 +277,7 @@ class InputHandler(Body):
 
         # default_values = ListOfOptions().show_default_value(self.pomo, self.long_break, self.short_break)
         ListOfOptions().start_pomodoro(
-            ListOfOptions().show_default_value(self.pomo, self.long_break, settings["short_break"]))
+            ListOfOptions().show_default_value(settings["long_break"], settings["short_break"], settings["pomo"]))
         choice = self.input_messenger('Enter your choice: ')
 
         # flag = True
