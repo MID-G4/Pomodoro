@@ -1,4 +1,7 @@
 import time
+import sys
+
+settings = {"pomo": 25, "long_break": 10, "short_break": 5}
 
 
 class ErrorHandler:
@@ -25,7 +28,7 @@ class ListOfOptions:
            Q) Quit Pomodoro
            ''')
 
-    def settings(self, p, sh, l):
+    def settings(self, l, sh, p):
         '''
         on settings screen to show all available options can the user interact with and take the default values from the
         main class body
@@ -48,7 +51,7 @@ class ListOfOptions:
         print('''
         Enter the new time for the Pomodoro section :  {} time in minutes
         press Enter to confirm your choice
-        R ) To return to main menu
+        R) To return to main menu
             '''.format(opt))
 
     def task_add(self):
@@ -57,7 +60,7 @@ class ListOfOptions:
         '''
         print('''
             ADD New Task:
-            R ) To return to main menu 
+            R) To return to main menu 
         ''')
 
     def task_after_added(self):
@@ -66,7 +69,7 @@ class ListOfOptions:
             Task Added Successfully
 
             V) View all the Tasks
-            R ) To return to previse menu
+            R) To return to starting menu
 
         ''')
 
@@ -77,7 +80,7 @@ class ListOfOptions:
         print('''
         )> Enter the task number + C to mark the task as complete
         )> Enter task number to start working on it
-        R) Return to main menu
+        R) Return to starting menu
         ''')
 
     def select_existing_task(self):
@@ -105,9 +108,7 @@ class ListOfOptions:
         '''
         to show the time values in the app
         '''
-        print('''
-        Time: {} minutes / long break {} minutes /short break {} minutes
-        '''.format(p, l, sh))
+
         text = '''
         Time: {} minutes / long break {} minutes /short break {} minutes
         '''.format(p, l, sh)
@@ -119,13 +120,12 @@ class ListOfOptions:
         Do you want to add Task
         Press (A)
 
-        R ) to return to main menu
+        R) to return to main menu
         ''')
 
     def break_timer(self):
         print(
             '''
-            P) to Pause the timer
             S) Start working on the task again
             LB) Start the long break
             M) return main menu
@@ -156,9 +156,9 @@ class Body:
         self.checkmark = 0
         self.mins = 0
         self.total_mins = 0
-        self.pomo = 25
-        self.short_break = 5
-        self.long_break = 10
+        # settings["pomo"] = 25
+        # settings["short_break"] = 5
+        # settings["long_break"] = 10
         self.options_list = ListOfOptions()
         self.choice = ''
         self.task_number = 0
@@ -181,19 +181,25 @@ class Body:
         self.choice = choice.lower()
         InputHandler().main_menu(self.choice)
 
-    def timer(self, userIn=25):
+    def timer(self):
         '''
         start the timer for pomodoro
         '''
         start = input('Press Enter to start the timer.')
-        while self.mins <= userIn:
-            time.sleep(60)
+        while self.mins < settings["pomo"]:
+            mins = settings["pomo"] // 60
+            secs = settings["pomo"] % 60
+            timer = '{:02d}:{:02d}'.format(mins, secs)
+            print(timer, end="\r")
+            time.sleep(1)
             self.mins = self.mins + 1
             self.total_mins += 1
-            print(self.mins, " minutes work completed.")
+            settings["pomo"] -= 1
+        print(self.mins, " minutes work completed.")
         print('End of this  Pomodoro')
         self.checkmark += 1
-        # print('Total check mark is ', self.checkmark)
+        print('Total check mark is ', self.checkmark)
+        self.settings()
 
     def options(self):
         '''
@@ -206,10 +212,15 @@ class Body:
 
         if self.checkmark >= 4:
             print('Lets Take a long break.!')
-            while self.mins != userIn:
-                time.sleep(60)
+            while self.mins != settings["long_break"]:
+                mins = settings["pomo"] // 60
+                secs = settings["pomo"] % 60
+                timer = '{:02d}:{:02d}'.format(mins, secs)
+                print(timer, end="\r")
+                time.sleep(1)
                 self.mins = self.mins + 1
-                print(self.mins, " minutes break completed.")
+            print(self.mins, " minutes break completed.")
+
             self.checkmark = 0
             print('The Break is over.')
 
@@ -217,15 +228,20 @@ class Body:
         """ set the short break """
         if self.checkmark < 4:
             print('Lets Take a short break.!')
-            while self.mins != userIn:
+            while self.mins != settings["short_break"]:
+                mins = settings["pomo"] // 60
+                secs = settings["pomo"] % 60
+                timer = '{:02d}:{:02d}'.format(mins, secs)
+                print(timer, end="\r")
                 time.sleep(60)
                 self.mins = self.mins + 1
-                print(self.mins, " minutes break completed.")
+            print(self.mins, " minutes break completed.")
+
             print('The Break is over.')
 
     def settings(self):
         """ Set the breaks """
-        self.options_list.settings(self.pomo, self.short_break, self.long_break)
+        self.options_list.settings(settings["long_break"], settings["short_break"], settings["pomo"])
         # print("Enter the set/tings symbol that you want to change")
         choice = input("Enter your choice:")
         choice = choice.lower()
@@ -233,12 +249,12 @@ class Body:
         if choice == 'sh':
             self.options_list.settings_selected('Short break ')
             userIn = int(input("Enter the break time :"))
-            self.short_break = int(userIn)
+            settings["short_break"] = userIn
             self.settings()
         elif choice == 'l':
             self.options_list.settings_selected('Long break ')
             userIn = int(input("Enter the break time :"))
-            self.long_break = int(userIn)
+            settings["long_break"] = int(userIn)
             self.settings()
 
 
@@ -246,24 +262,23 @@ class Body:
             self.options_list.settings_selected('Pomodoro break ')
             userIn = int(input("Enter the pomodoro time : "))
             # self.timer(userIn)
-            self.pomo = int(userIn)
+            settings["pomo"] = int(userIn)
             self.settings()
 
     def quit_pomodoro(self):
-        pass
+        print('Thanks for using our app, hope to see you again ')
+        sys.exit()
 
 
 class InputHandler(Body):
 
     def main_menu(self, choice):
-        tasks = Task()
         if choice == 's':
             self.start_pomodoro()
         elif choice == 'a':
-            tasks.add_task()
+            self.add_task()
         elif choice == 'v':
-            # tasks.list_tasks()
-            self.view_all_tasks()
+            self.view_all_tasks(self.added_tasks)
         elif choice == 'st':
             self.settings()
         elif choice == 'q':
@@ -273,8 +288,9 @@ class InputHandler(Body):
         '''select task to work on, to update or to mark it as completed'''
 
         # default_values = ListOfOptions().show_default_value(self.pomo, self.long_break, self.short_break)
-        ListOfOptions().start_pomodoro(ListOfOptions().show_default_value(self.pomo, self.long_break, self.short_break))
-        choice = self.input_messenger('Enter your choice: ')
+        ListOfOptions().start_pomodoro(ListOfOptions().show_default_value(settings["pomo"], settings["long_break"],
+                                                                          settings["short_break"]))
+        choice = self.input_messenger('Enter your choice: >')
 
         # flag = True
         # while flag:
@@ -284,7 +300,7 @@ class InputHandler(Body):
             self.add_task()
         if choice.lower() == 's':
             # flag = False
-            if Task().task_number > 0:
+            if self.task_number > 0:
                 # Task().list_tasks()
                 self.view_all_tasks(self.added_tasks)
             else:
@@ -299,60 +315,77 @@ class InputHandler(Body):
             if choice.lower() == 'r':
                 self.welcoming_main_menu()
             else:
-                choice = self.input_messenger('Please make sure you entered valid input: Enter your choice: ')
+                choice = self.input_messenger('Please make sure you entered valid input: Enter your choice: >')
             if choice.lower() == 'r':
                 self.welcoming_main_menu()
             else:
-                choice = self.input_messenger('Please make sure you entered valid input: Enter your choice: ')
+                choice = self.input_messenger('Please make sure you entered valid input: Enter your choice: >')
 
     def add_task(self):
         ListOfOptions().task_add()
         # Task().add_task()
-        task = Task().add_task()
+        # task = Task().add_task()
+        task = self.input_task_desc()
         self.task_number += 1
+        # print(self.task_number, '< self.task_number')
         self.added_tasks[self.task_number] = task
         ListOfOptions().task_after_added()
         self.after_task_added()
 
     def after_task_added(self):
-        choice = self.input_messenger('Enter your choice: ')
+        choice = self.input_messenger('Enter your choice: >')
         if choice.lower() == 'v':
             self.view_all_tasks(self.added_tasks)
 
         if choice.lower() == 'r':
-            pass
+            # self.welcoming_main_menu()
+            # self.add_task()
+            self.start_pomodoro()
         # will be implemented soon for edge cases
-        # else:
-        #     choice = self.input_messenger('Please make sure you entered valid input: Enter your choice: ')
-        #
+        else:
+            print('Please make sure you entered valid input')
+            self.after_task_added()
 
     def view_all_tasks(self, task1):
         # ListOfOptions().show_default_value()
-
         # Task().list_tasks()
-        print(self.added_tasks)
+        print(''' To Do List: \n'''
+              , self.added_tasks)
+
         ListOfOptions().view_list_of_tasks()
         choice = self.input_messenger('Enter your choice: >')
         # print(len(choice))
         if len(choice) > 1:
             if (int(choice[0]) in self.added_tasks) and (choice[1].lower() == 'c'):
-                ## task completed
-                # task = Task().complete_task()
-                # self.completed_tasks[int(choice[0])] = self.added_tasks.get(int(choice[0]))
                 self.completed_tasks[self.task_number] = self.added_tasks.get(self.task_number)
-                print(self.completed_tasks)
+                # print(self.completed_tasks)
+                # self.completed_tasks[task_number] = self.added_tasks.get(task_number)
+                del self.added_tasks[self.task_number]
+                print(''' Completed Tasks List: \n'''
+                      , self.completed_tasks)
                 self.view_all_tasks(self.added_tasks)
-            # self.completed_tasks[self.task_number] = self.added_tasks.get(self.task_number)
 
-        if len(choice) == 1:
+            else:
+                print('something went wrong')
+                self.view_all_tasks(self.added_tasks)
+                # self.completed_tasks[self.task_number] = self.added_tasks.get(self.task_number)
+
+        if len(choice) == 1 and choice != 'r':
             if int(choice[0]) in self.added_tasks:
                 # start the timer
                 # timer
                 task = self.added_tasks[int(choice)]
-                self.task_in_progress(task)
+                self.task_in_progress(task, int(choice))
+            else:
+                print("something went wrong probably you don't have any available\n tasks or you entered wrong number")
+                self.view_all_tasks(self.added_tasks)
 
-        if choice.lower() == 'r':
-            self.welcoming_main_menu()
+        elif choice.lower() == 'r':
+            self.start_pomodoro()
+
+        else:
+            # handle wrong input
+            pass
 
     # def select_task(self):
     #     ListOfOptions().show_default_value()
@@ -364,21 +397,23 @@ class InputHandler(Body):
 
     def no_tasks_founded(self):
         ListOfOptions().no_tasks_founded()
-        choice = self.input_messenger('Enter your choice: ')
+        choice = self.input_messenger('Enter your choice: >')
         if choice.lower() == "a":
             self.add_task()
 
-    def task_in_progress(self, task):
+    def task_in_progress(self, task, task_number):
         print(task)
+        print(task_number)
+        self.timer()
 
         # timer progress
         ListOfOptions().task_in_progress()
-        choice = self.input_messenger('Enter your choice: ')
+        choice = self.input_messenger('Enter your choice: >')
         if choice.lower() == 'p':
             # pause timer
             pass
         if choice.lower() == 'lb':
-            self.short_Break()
+            self.long_Break()
             self.break_in_progress(task)
 
         if choice.lower() == 'sb':
@@ -389,15 +424,21 @@ class InputHandler(Body):
         if choice.lower() == 'r':
             self.view_all_tasks(self.added_tasks)
         if choice.lower() == 'c':
-            # mark task as complete
             # Task().update_added_tasks(task)
-            Task().update_added_tasks('1')
+            # Task().update_added_tasks('1')
+            self.completed_tasks[task_number] = self.added_tasks.get(task_number)
+            del self.added_tasks[task_number]
+            print(''' Completed Tasks List: \n'''
+                  , self.completed_tasks)
+            # print(task)
+            # print(task_number)
+            self.view_all_tasks(self.added_tasks)
 
     def break_in_progress(self, task):
         print(task)
         # timer progress
-        ListOfOptions().task_in_progress()
-        choice = self.input_messenger('Enter your choice: ')
+        ListOfOptions().break_timer()
+        choice = self.input_messenger('Enter your choice: >')
 
         if choice.lower() == 'p':
             # pause
@@ -411,45 +452,53 @@ class InputHandler(Body):
             self.welcoming_main_menu()
         if choice.lower() == 'r':
             self.view_all_tasks(self.added_tasks)
+        else:
+            # handle wrong input
+            pass
 
-
-class Task:
-    def __init__(self):
-        self.task_number = 0
-        self.added_tasks = {}
-        self.completed_tasks = {}
-        # pass
-
-    def add_task(self):
-        """add a task to the list of tasks"""
-        self.task_number += 1
+    def input_task_desc(self):
         task_desc = input("Please enter the task's description: >")
-        task = self.added_tasks[self.task_number] = f'{task_desc}'
-        # Body().added_tasks[Body().task_number] = f'{task_desc}'
-
-        self.list_tasks()
-        return task
-
-    # def complete_task(self):
-    #     """add a task to the completed list of tasks"""
-    #     self.completed_tasks[self.task_number] = self.added_tasks.get(self.task_number)
-    #     return self.completed_tasks
-
-    def delete_task(self):
-        """delete a task for the list of added tasks"""
-        del self.added_tasks[self.task_number]
-
-    def update_added_tasks(self, task):
-        """add a task to the completed list and delete it from the added list"""
-        self.complete_task()
-        self.delete_task()
-
-    def list_tasks(self):
-        """ view the added task to the user """
-        print(self.added_tasks)
-        return self.added_tasks
+        return task_desc
 
 
+# class Task:
+# def __init__(self):
+# self.task_number = 0
+# self.added_tasks = {}
+# self.completed_tasks = {}
+# pass
+
+# def add_task(self):
+# """add a task to the list of tasks"""
+# self.task_number += 1
+# task_desc = input("Please enter the task's description: >")
+# self.added_tasks[self.task_number] = task_desc
+# task = self.added_tasks[self.task_number] = f'{task_desc}'
+# Body().added_tasks[Body().task_number] = f'{task_desc}'
+# self.added_tasks[self.task_number] = f'{task_desc}'
+
+# self.list_tasks()
+# print(task_desc)
+# return task_desc
+
+# def complete_task(self):
+#     """add a task to the completed list of tasks"""
+#     self.completed_tasks[self.task_number] = self.added_tasks.get(self.task_number)
+#     return self.completed_tasks
+#
+# def delete_task(self):
+#     """delete a task for the list of added tasks"""
+#     del self.added_tasks[self.task_number]
+#
+# def update_added_tasks(self, task):
+#     """add a task to the completed list and delete it from the added list"""
+#     self.complete_task()
+#     self.delete_task()
+#
+# def list_tasks(self):
+#     """ view the added task to the user """
+#     print(self.added_tasks)
+#     return self.added_tasks
 
 
 class Display:
