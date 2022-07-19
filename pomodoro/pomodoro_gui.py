@@ -5,11 +5,12 @@ from tkinter import ttk, PhotoImage
 
 
 class PomodoroTimer:
-    def __init__(self):
+    def __init__(self, settings):
+        self.settings = settings
         self.root = tk.Tk()
         self.root.geometry("600x300")
         self.root.title("Pomodoro MID-4")
-        # self.root.tk.call('wm', 'iconphoto', self.root._w, PhotoImage(file='./assets/tomo.jpg'))
+        # self.root.tk.call('wm', 'iconphoto', self.root._w, PhotoImage(file='tomo.png'))
         self.s = ttk.Style()
         self.s.configure("TNotebook.Tab", font=("Ubuntu", 16))
         self.s.configure("TButton", font=("Ubuntu", 16))
@@ -20,13 +21,13 @@ class PomodoroTimer:
         self.tab2 = ttk.Frame(self.tabs, width=600, height=100)
         self.tab3 = ttk.Frame(self.tabs, width=600, height=100)
 
-        self.pomodoro_timer_label = ttk.Label(self.tab1, text="25:00", font=("Ubuntu", 48))
+        self.pomodoro_timer_label = ttk.Label(self.tab1, text=self.settings['pomo'], font=("Ubuntu", 48))
         self.pomodoro_timer_label.pack(pady=20)
 
-        self.short_break_timer_label = ttk.Label(self.tab2, text="5:00", font=("Ubuntu", 48))
+        self.short_break_timer_label = ttk.Label(self.tab2, text=self.settings['short_break'], font=("Ubuntu", 48))
         self.short_break_timer_label.pack(pady=20)
 
-        self.long_break_timer_label = ttk.Label(self.tab3, text="15:00", font=("Ubuntu", 48))
+        self.long_break_timer_label = ttk.Label(self.tab3, text=self.settings['long_break'], font=("Ubuntu", 48))
         self.long_break_timer_label.pack(pady=20)
 
         self.tabs.add(self.tab1, text="Pomodoro")
@@ -45,8 +46,9 @@ class PomodoroTimer:
         self.reset_button = ttk.Button(self.grid_layout, text="Reset", command=self.reset_clock)
         self.reset_button.grid(row=0, column=2)
 
-        self.pomodoro_counter_label = ttk.Label(self.grid_layout, text="Pomodoro Counter: 0", font=("Ubuntu",16))
+        self.pomodoro_counter_label = ttk.Label(self.grid_layout, text="Pomodoro Counter: 0", font=("Ubuntu", 16))
         self.pomodoro_counter_label.grid(row=1, column=0, columnspan=3, pady=10)
+
         self.pomodoros = 0
         self.skipped = False
         self.stopped = False
@@ -59,6 +61,7 @@ class PomodoroTimer:
             t.start()
             self.running = True
 
+    # def start_timer(self,pomo=25,lb=15, sh=5):
     def start_timer(self):
 
         self.stopped = False
@@ -66,7 +69,7 @@ class PomodoroTimer:
         timer_id = self.tabs.index(self.tabs.select()) + 1
 
         if timer_id == 1:
-            full_seconds = 60 * 25
+            full_seconds = 60 * self.settings['pomo']
             while full_seconds > 0 and not self.stopped:
                 minutes, seconds = divmod(full_seconds, 60)
                 self.pomodoro_timer_label.configure(text=f"{minutes:02d}:{seconds:02d}")
@@ -82,7 +85,7 @@ class PomodoroTimer:
                     self.tabs.select(1)
                 self.start_timer()
         elif timer_id == 2:
-            full_seconds = 60 * 5
+            full_seconds = 60 * self.settings['short_break']
             while full_seconds > 0 and not self.stopped:
                 minutes, seconds = divmod(full_seconds, 60)
                 self.short_break_timer_label.configure(text=f"{minutes:02d}:{seconds:02d}")
@@ -93,7 +96,7 @@ class PomodoroTimer:
                 self.tabs.select(0)
                 self.start_timer()
         elif timer_id == 3:
-            full_seconds = 60 * 15
+            full_seconds = 60 * self.settings['long_break']
             while full_seconds > 0 and not self.stopped:
                 minutes, seconds = divmod(full_seconds, 60)
                 self.long_break_timer_label.configure(text=f"{minutes:02d}:{seconds:02d}")
@@ -106,25 +109,24 @@ class PomodoroTimer:
         else:
             print("Invalid timer id")
 
-
     def reset_clock(self):
         self.stopped = True
         self.skipped = False
         self.pomodoros = 0
-        self.pomodoro_timer_label.config(text="25:00")
-        self.short_break_timer_label.config(text="05:00")
-        self.long_break_timer_label.config(text="15:00")
+        self.pomodoro_timer_label.config(text=self.settings['pomo'])
+        self.short_break_timer_label.config(text=self.settings['short_break'])
+        self.long_break_timer_label.config(text=self.settings['long_break'])
         self.pomodoro_counter_label.config(text="Pomodoros: 0")
         self.running = False
 
     def skip_clock(self):
         current_tab = self.tabs.index(self.tabs.select())
         if current_tab == 0:
-            self.pomodoro_timer_label.config(text="25:00")
+            self.pomodoro_timer_label.config(text=self.settings['pomo'])
         elif current_tab == 1:
-            self.short_break_timer_label.config(text="05:00")
+            self.short_break_timer_label.config(text=self.settings['short_break'])
         elif current_tab == 2:
-            self.long_break_timer_label.config(text="15:00")
+            self.long_break_timer_label.config(text=self.settings['long_break'])
 
         self.stopped = True
         self.skipped = True
