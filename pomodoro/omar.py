@@ -1,5 +1,6 @@
 import time
 import sys
+# from pomodoro_gui import *
 
 settings = {"pomo": 25, "long_break": 10, "short_break": 5}
 
@@ -136,7 +137,6 @@ class ListOfOptions:
     def task_in_progress(self):
         print(
             '''
-
             P) to Pause the timer
             LB) Start the long break
             SB) Start the short break
@@ -145,6 +145,7 @@ class ListOfOptions:
             C) select task as complete
             '''
         )
+
 
 class Body:
     '''
@@ -184,29 +185,48 @@ class Body:
         '''
         start the timer for pomodoro
         '''
-        start = input('Press Enter to start the timer.')
-        while self.mins < settings["pomo"]:
-            mins = settings["pomo"] // 60
-            secs = settings["pomo"] % 60
+        # p =  25*60
+        self.options_list.task_in_progress()
+        ih = InputHandler()
+        ih.test()
+        t = settings["pomo"] * 60
+        while t:
+            mins = t // 60
+            secs = t % 60
             timer = '{:02d}:{:02d}'.format(mins, secs)
             print(timer, end="\r")
             time.sleep(1)
+            t -= 1
+            # while p:
+            #     minutes = p // 60
+            #     seconds = p % 60
+            #     timer = '{:02d}:{:02d}'.format(minutes, seconds)
+            #     print(timer, end="\r")
+            #     time.sleep(1)
+            #     p -=1
             self.mins = self.mins + 1
-            self.total_mins += 1
-            settings["pomo"] -= 1
-        print(self.mins, " minutes work completed.")
-        print('End of this  Pomodoro')
+            # self.total_mins += 1
+            # settings["pomo"] -= 1
+        print(self.mins // 60, " minutes work completed.")
+        print('End of this Pomodoro')
         self.checkmark += 1
         print('Total check mark is ', self.checkmark)
-        self.settings()
+        if self.checkmark >= 4:
+            print('Lets take a long break!')
+            t = settings["long_break"] * 60
+            while t:
+                mins = t // 60
+                secs = t % 60
+                timer = '{:02d}:{:02d}'.format(mins, secs)
+                print(timer, end="\r")
+                time.sleep(1)
+                t -= 1
+                self.mins = self.mins + 1
+            print(self.mins // 60, " minutes break completed.")
+            self.checkmark = 0
+            print('The break is over.')
 
-    def options(self):
-        '''
-        display the options in each page instructions
-        '''
-        pass
-
-    def long_Break(self, userIn=10):
+    def long_Break(self, user_in=10):
         """ set the long break """
 
         if self.checkmark >= 4:
@@ -223,7 +243,7 @@ class Body:
             self.checkmark = 0
             print('The Break is over.')
 
-    def short_Break(self, userIn=3):
+    def short_Break(self, user_in=3):
         """ set the short break """
         if self.checkmark < 4:
             print('Lets Take a short break.!')
@@ -247,22 +267,30 @@ class Body:
 
         if choice == 'sh':
             self.options_list.settings_selected('Short break ')
-            userIn = int(input("Enter the break time :"))
-            settings["short_break"] = userIn
+            user_in = input("Enter the break time :")
+            if user_in == 'r':
+                self.settings()
+            settings["short_break"] = int(user_in)
             self.settings()
         elif choice == 'l':
             self.options_list.settings_selected('Long break ')
-            userIn = int(input("Enter the break time :"))
-            settings["long_break"] = int(userIn)
+            user_in = input("Enter the break time :")
+            if user_in == 'r':
+                self.settings()
+            settings["long_break"] = int(user_in)
             self.settings()
-
 
         elif choice == 'p':
             self.options_list.settings_selected('Pomodoro break ')
-            userIn = int(input("Enter the pomodoro time : "))
-            # self.timer(userIn)
-            settings["pomo"] = int(userIn)
+            user_in = input("Enter the pomodoro time : ")
+            if user_in == 'r':
+                self.settings()
+            # self.timer(user_in)
+            settings["pomo"] = int(user_in)
             self.settings()
+
+        elif choice == "r":
+            self.welcoming_main_menu()
 
     def quit_pomodoro(self):
         print('Thanks for using our app, hope to see you again ')
@@ -325,6 +353,8 @@ class InputHandler(Body):
         # Task().add_task()
         # task = Task().add_task()
         task = self.input_task_desc()
+        if task == 'r':
+            self.start_pomodoro()
         self.task_number += 1
         # print(self.task_number, '< self.task_number')
         self.added_tasks[self.task_number] = task
@@ -399,12 +429,14 @@ class InputHandler(Body):
         choice = self.input_messenger('Enter your choice: >')
         if choice.lower() == "a":
             self.add_task()
+        if choice.lower() == "r":
+            self.start_pomodoro()
 
     def task_in_progress(self, task, task_number):
         print(task)
-        print(task_number)
-        self.timer()
-
+        # print(task_number)
+        # self.timer()
+        # PomodoroTimer()
         # timer progress
         ListOfOptions().task_in_progress()
         choice = self.input_messenger('Enter your choice: >')
@@ -433,6 +465,32 @@ class InputHandler(Body):
             # print(task_number)
             self.view_all_tasks(self.added_tasks)
 
+    def test(self):
+        # ListOfOptions().task_in_progress()
+        choice = self.input_messenger('Enter your choice: ')
+        if choice.lower() == 'y':
+            self.timer()
+        if choice.lower() == 'p':
+            # pause timer
+            pass
+        if choice.lower() == 'sb':
+            self.short_Break()
+        #     self.break_in_progress(task)
+        if choice.lower() == 'r':
+            self.view_all_tasks(self.added_tasks)
+        # if choice.lower() == 'c':
+        #     # Task().update_added_tasks(task)
+        #     # Task().update_added_tasks('1')
+        #     self.completed_tasks[task_number] = self.added_tasks.get(task_number)
+        #     del self.added_tasks[task_number]
+        #     print(''' Completed Tasks List: \n'''
+        #           , self.completed_tasks)
+            # print(task)
+            # print(task_number)
+            # self.view_all_tasks(self.added_tasks)
+        if choice.lower() == 'q':
+            self.quit_pomodoro()
+
     def break_in_progress(self, task):
         print(task)
         # timer progress
@@ -458,56 +516,6 @@ class InputHandler(Body):
     def input_task_desc(self):
         task_desc = input("Please enter the task's description: >")
         return task_desc
-
-
-# class Task:
-# def __init__(self):
-# self.task_number = 0
-# self.added_tasks = {}
-# self.completed_tasks = {}
-# pass
-
-# def add_task(self):
-# """add a task to the list of tasks"""
-# self.task_number += 1
-# task_desc = input("Please enter the task's description: >")
-# self.added_tasks[self.task_number] = task_desc
-# task = self.added_tasks[self.task_number] = f'{task_desc}'
-# Body().added_tasks[Body().task_number] = f'{task_desc}'
-# self.added_tasks[self.task_number] = f'{task_desc}'
-
-# self.list_tasks()
-# print(task_desc)
-# return task_desc
-
-# def complete_task(self):
-#     """add a task to the completed list of tasks"""
-#     self.completed_tasks[self.task_number] = self.added_tasks.get(self.task_number)
-#     return self.completed_tasks
-#
-# def delete_task(self):
-#     """delete a task for the list of added tasks"""
-#     del self.added_tasks[self.task_number]
-#
-# def update_added_tasks(self, task):
-#     """add a task to the completed list and delete it from the added list"""
-#     self.complete_task()
-#     self.delete_task()
-#
-# def list_tasks(self):
-#     """ view the added task to the user """
-#     print(self.added_tasks)
-#     return self.added_tasks
-
-
-class Display:
-    '''
-    To render all the app content
-    functionally : root
-    '''
-
-    def __init__(self):
-        pass
 
 
 if __name__ == '__main__':
