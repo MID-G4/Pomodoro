@@ -146,7 +146,6 @@ class ListOfOptions:
             '''
         )
 
-
 class Body:
     '''
     Implementing all the code functionally in it.
