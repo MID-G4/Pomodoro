@@ -1,16 +1,13 @@
-import time
-import sys
-from pomodoro_gui import *
+import sys, os
 
+
+from pomodoro_gui import *
 
 def prGreen(skk): print("\033[92m {}\033[00m".format(skk))
 
-
 def prRed(skk): print("\033[91m {}\033[00m".format(skk))
 
-
 settings = {"pomo": 25, "long_break": 10, "short_break": 5}
-
 
 class ErrorHandler:
     '''
@@ -20,20 +17,29 @@ class ErrorHandler:
     def __init__(self):
         pass
 
-
 class ListOfOptions:
     def __init__(self):
         pass
 
     def main_menu(self):
+        os.system('cls')
+        frames = []
+        filename = ['welcome.txt']
+        for name in filename:
+            with open(name,'r',encoding='utf-8') as f:
+                frames.append(f.readlines())
+        # for i in range(1):
+            for frame in frames:
+                prRed("".join(frame))
+                time.sleep(0.1)
+                os.system('cls')
         print('''
-           Welcome to Pomodoro
-           Please chose from the following:
+           Please choose from the following:
            S) To start Pomodoro
-           A) To add a task
-           V) View all tasks
-           ST) Settings
-           Q) Quit Pomodoro
+           A) Add task to your workplace
+           V) View all the tasks
+           ST) For settings
+           Q) To quit the application
            ''')
 
     def settings(self, l, sh, p):
@@ -42,12 +48,12 @@ class ListOfOptions:
         main class body
         '''
         text = '''
-           L ) Long Break : {} m every 4 running Pomodoro's
-           SH ) Short Break : {} m
-           P ) Pomodoro's:  {} m
-           R ) To return to main menu
+           L) Long break: {} m every 4 running Pomodoro's
+           SH) Short break: {} m
+           P) Pomodoro's: {} m
+           R) To return to main menu
 
-           Enter the settings symbol that you want to change .
+           Enter the setting letter that you want to change.
            '''.format(l, sh, p)
 
         print(text)
@@ -57,8 +63,8 @@ class ListOfOptions:
         on edit selected option
         '''
         print('''
-        Enter the new time for the Pomodoro section :  {} time in minutes
-        press Enter to confirm your choice
+        Enter the new time for the Pomodoro: {} time in minutes
+        Press enter to confirm your choice.
         R) To return to main menu
             '''.format(opt))
 
@@ -67,14 +73,14 @@ class ListOfOptions:
         in add new task screen
         '''
         print('''
-            ADD New Task:
+            Ad new task:
             R) To return to main menu 
         ''')
 
     def task_after_added(self):
-        prGreen('''Task Added Successfully''')
+        prGreen('''Task added successfully''')
         print('''
-            V) View all the Tasks
+            V) View all the tasks
             R) To return to starting menu
         ''')
 
@@ -83,16 +89,16 @@ class ListOfOptions:
         in the main screen view all tasks & after add new task and select view all tasks
         '''
         print('''
-        )> Enter the task number + C to mark the task as complete
-        )> Enter task number to start working on it
+        > Enter the task number + C to mark the task as completed.
+        > Enter the task number to start working on it.
         R) Return to starting menu
         ''')
 
     def select_existing_task(self):
         print(
             '''
-        )> Enter the task number to start.
-        R)> Return to main menu.
+        > Enter the task number to start.
+        R) Return to main menu
             '''
         )
 
@@ -104,9 +110,9 @@ class ListOfOptions:
         To start Pomodoro:''' +
               opt_func +
               '''
-              A) add task to work on
-              S) select existing task
-              R) return to main menu
+              A) Add task to work on
+              S) Select an existing task
+              R) Return to main menu
               ''')
 
     def show_default_value(self, p, l, sh):
@@ -115,17 +121,17 @@ class ListOfOptions:
         '''
 
         text = '''
-        Time: {} minutes / long break {} minutes /short break {} minutes
+        Time: Task {} minutes / long break {} minutes / short break {} minutes
         '''.format(p, l, sh)
         return text
 
     def no_tasks_founded(self):
         print('''
-        You Don't have an existing tasks !
-        Do you want to add Task
+        You don't have an existing task!
+        Do you want to add a task?
         Press (A)
 
-        R) to return to main menu
+        R) To return to main menu
         ''')
 
     # def break_timer(self):
@@ -141,12 +147,11 @@ class ListOfOptions:
     def task_in_progress(self):
         print(
             '''
-            M) return main menu
-            R) return to select task
-            C) select task as complete
+            M) Return to main menu
+            R) Return to select a task
+            C) Select task as complete
             '''
         )
-
 
 class Body:
     '''
@@ -171,33 +176,33 @@ class Body:
     # create new method that will handle the input itself and do the testing
 
     def user_input_main_menu(self):
-        choice = input("Enter your choice:")
+        choice = input("Enter your choice: ")
         self.choice = choice.lower()
         InputHandler().main_menu(self.choice)
 
     def settings(self):
         """ Set the breaks """
         self.options_list.settings(settings["long_break"], settings["short_break"], settings["pomo"])
-        choice = input("Enter your choice:")
+        choice = input("Enter your choice: ")
         choice = choice.lower()
 
         if choice == 'sh':
             self.options_list.settings_selected('Short break ')
-            user_in = input("Enter the break time :")
+            user_in = input("Enter the break time: ")
             if user_in == 'r':
                 self.settings()
             settings["short_break"] = int(user_in)
             self.settings()
         elif choice == 'l':
             self.options_list.settings_selected('Long break ')
-            user_in = input("Enter the break time :")
+            user_in = input("Enter the break time: ")
             if user_in == 'r':
                 self.settings()
             settings["long_break"] = int(user_in)
             self.settings()
         elif choice == 'p':
             self.options_list.settings_selected('Pomodoro break ')
-            user_in = input("Enter the pomodoro time : ")
+            user_in = input("Enter the pomodoro time: ")
             if user_in == 'r':
                 self.settings()
             settings["pomo"] = int(user_in)
@@ -206,13 +211,12 @@ class Body:
             self.welcoming_main_menu()
 
         else:
-            prRed("please make sure you entered valid input")
+            prRed("Please make sure you entered a valid input!")
             self.settings()
 
     def quit_pomodoro(self):
-        print('Thanks for using our app, hope to see you again ')
+        print('Thanks for using our app, hope to see you again!')
         sys.exit()
-
 
 class InputHandler(Body):
 
@@ -233,7 +237,7 @@ class InputHandler(Body):
 
         ListOfOptions().start_pomodoro(ListOfOptions().show_default_value(settings["pomo"], settings["long_break"],
                                                                           settings["short_break"]))
-        choice = self.input_messenger('Enter your choice: >')
+        choice = self.input_messenger('Enter your choice: ')
 
         if choice.lower() == 'a':
             self.add_task()
@@ -246,7 +250,7 @@ class InputHandler(Body):
             self.welcoming_main_menu()
 
         else:
-            prRed("please make sure you entered valid input")
+            prRed("Please make sure you entered a valid input!")
             self.start_pomodoro()
 
     def add_task(self):
@@ -260,7 +264,7 @@ class InputHandler(Body):
         self.after_task_added()
 
     def after_task_added(self):
-        choice = self.input_messenger('Enter your choice: >')
+        choice = self.input_messenger('Enter your choice: ')
         if choice.lower() == 'v':
             self.view_all_tasks(self.added_tasks)
 
@@ -268,31 +272,31 @@ class InputHandler(Body):
             self.start_pomodoro()
         # will be implemented soon for edge cases
         else:
-            print('Please make sure you entered valid input')
+            print('Please make sure you entered a valid input!')
             self.after_task_added()
 
     def view_all_tasks(self, task1):
-        prRed('''To Do List''')
+        prRed('''To do list''')
 
         for key, value in self.added_tasks.items():
             print(" " + str(key) + " - " + value)
 
         ListOfOptions().view_list_of_tasks()
-        choice = self.input_messenger('Enter your choice: >')
+        choice = self.input_messenger('Enter your choice: ')
         if len(choice) > 1:
-            if type(choice[0]) is str:
-                prRed('something went wrong')
-                self.view_all_tasks(self.added_tasks)
+            # if type(choice[0]) is str:
+            #     prRed('Something went wrong!')
+            #     self.view_all_tasks(self.added_tasks)
             if (int(choice[0]) in self.added_tasks) and (choice[1].lower() == 'c'):
                 self.completed_tasks[self.task_number] = self.added_tasks.get(self.task_number)
                 del self.added_tasks[self.task_number]
-                prGreen(''' Completed Tasks List:''')
+                prGreen(''' Completed tasks list:''')
                 for key, value in self.completed_tasks.items():
                     print(" " + str(key) + " - " + value)
                 self.view_all_tasks(self.added_tasks)
 
             else:
-                print('something went wrong')
+                print('Something went wrong!')
                 self.view_all_tasks(self.added_tasks)
 
         if len(choice) == 1 and choice != 'r':
@@ -300,7 +304,7 @@ class InputHandler(Body):
                 task = self.added_tasks[int(choice)]
                 self.task_in_progress(task, int(choice))
             else:
-                prRed("something went wrong probably you don't have any available\n tasks or you entered wrong number")
+                prRed("Something went wrong probably you don't have any available\n tasks or you entered a wrong number.")
                 self.view_all_tasks(self.added_tasks)
 
         if choice.lower() == 'r':
@@ -308,26 +312,26 @@ class InputHandler(Body):
 
         else:
             # handle wrong input
-            prRed("please make sure you entered valid input")
+            prRed("Please make sure you entered a valid input!")
             self.view_all_tasks(self.added_tasks)
 
     def no_tasks_founded(self):
         ListOfOptions().no_tasks_founded()
-        choice = self.input_messenger('Enter your choice: >')
+        choice = self.input_messenger('Enter your choice: ')
         if choice.lower() == "a":
             self.add_task()
         if choice.lower() == "r":
             self.start_pomodoro()
         else:
             # handle wrong input
-            prRed("please make sure you entered valid input")
+            prRed("Please make sure you entered valid input!")
             self.no_tasks_founded()
 
     def task_in_progress(self, task, task_number):
         print(task)
         PomodoroTimer(settings)
         ListOfOptions().task_in_progress()
-        choice = self.input_messenger('Enter your choice: >')
+        choice = self.input_messenger('Enter your choice: ')
         if choice.lower() == 'm':
             self.welcoming_main_menu()
         if choice.lower() == 'r':
@@ -335,19 +339,18 @@ class InputHandler(Body):
         if choice.lower() == 'c':
             self.completed_tasks[task_number] = self.added_tasks.get(task_number)
             del self.added_tasks[task_number]
-            prGreen(''' Completed Tasks List:''')
+            prGreen(''' Completed tasks list:''')
             for key, value in self.completed_tasks.items():
                 print(" " + str(key) + " - " + value)
             self.view_all_tasks(self.added_tasks)
 
         else:
-            prRed("please make sure you entered valid input")
+            prRed("Please make sure you entered valid input!")
             self.view_all_tasks(self.added_tasks)
 
     def input_task_desc(self):
-        task_desc = input("Please enter the task's description: >")
+        task_desc = input("Please enter the task's description: ")
         return task_desc
-
 
 if __name__ == '__main__':
     B = Body()
