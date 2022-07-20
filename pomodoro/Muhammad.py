@@ -1,13 +1,19 @@
 import sys, os
-
+import pandas as pd
+import numpy as np
+from os.path import exists
 
 from pomodoro_gui import *
 
+
 def prGreen(skk): print("\033[92m {}\033[00m".format(skk))
+
 
 def prRed(skk): print("\033[91m {}\033[00m".format(skk))
 
+
 settings = {"pomo": 25, "long_break": 10, "short_break": 5}
+
 
 class ErrorHandler:
     '''
@@ -16,6 +22,7 @@ class ErrorHandler:
 
     def __init__(self):
         pass
+
 
 class ListOfOptions:
     def __init__(self):
@@ -26,9 +33,9 @@ class ListOfOptions:
         frames = []
         filename = ['welcome.txt']
         for name in filename:
-            with open(name,'r',encoding='utf-8') as f:
+            with open(name, 'r', encoding='utf-8') as f:
                 frames.append(f.readlines())
-        # for i in range(1):
+            # for i in range(1):
             for frame in frames:
                 prRed("".join(frame))
                 time.sleep(0.1)
@@ -153,6 +160,7 @@ class ListOfOptions:
             '''
         )
 
+
 class Body:
     '''
     Implementing all the code functionally in it.
@@ -218,6 +226,7 @@ class Body:
         print('Thanks for using our app, hope to see you again!')
         sys.exit()
 
+
 class InputHandler(Body):
 
     def main_menu(self, choice):
@@ -264,6 +273,18 @@ class InputHandler(Body):
         self.after_task_added()
 
     def after_task_added(self):
+        file_exists = exists('./tasks.csv')
+        if file_exists:
+            df = pd.read_csv('tasks.csv', on_bad_lines='skip')
+
+            df = pd.DataFrame(self.added_tasks,index=[0])
+            df.to_csv('tasks.csv',header=False)
+            print(df,"exists")
+        else:
+            df = pd.DataFrame(self.added_tasks,index=[0])
+            df.to_csv("./tasks.csv",sep='\t')
+            print(df)
+
         choice = self.input_messenger('Enter your choice: ')
         if choice.lower() == 'v':
             self.view_all_tasks(self.added_tasks)
@@ -304,7 +325,8 @@ class InputHandler(Body):
                 task = self.added_tasks[int(choice)]
                 self.task_in_progress(task, int(choice))
             else:
-                prRed("Something went wrong probably you don't have any available\n tasks or you entered a wrong number.")
+                prRed(
+                    "Something went wrong probably you don't have any available\n tasks or you entered a wrong number.")
                 self.view_all_tasks(self.added_tasks)
 
         if choice.lower() == 'r':
@@ -329,7 +351,7 @@ class InputHandler(Body):
 
     def task_in_progress(self, task, task_number):
         print(task)
-        PomodoroTimer(settings)
+        pomo_coun = PomodoroTimer(settings)
         ListOfOptions().task_in_progress()
         choice = self.input_messenger('Enter your choice: ')
         if choice.lower() == 'm':
@@ -338,6 +360,15 @@ class InputHandler(Body):
             self.view_all_tasks(self.added_tasks)
         if choice.lower() == 'c':
             self.completed_tasks[task_number] = self.added_tasks.get(task_number)
+            file_exists = exists('./tasks.csv')
+            if file_exists:
+                df = pd.read_csv('tasks.csv', on_bad_lines='skip')
+                df = pd.DataFrame(self.added_tasks, index=[0])
+                df.drop([task_number], axis=1, inplace=True)
+                print(df)
+        # else:
+        #     print('no existing tasks plz make sure you add tasks before list them as completed ')
+        #
             del self.added_tasks[task_number]
             prGreen(''' Completed tasks list:''')
             for key, value in self.completed_tasks.items():
@@ -351,6 +382,7 @@ class InputHandler(Body):
     def input_task_desc(self):
         task_desc = input("Please enter the task's description: ")
         return task_desc
+
 
 if __name__ == '__main__':
     B = Body()
