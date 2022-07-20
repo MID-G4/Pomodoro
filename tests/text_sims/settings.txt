@@ -1,6 +1,7 @@
-L ) Long Break : {} m every 4 running Pomodoro's
-           SH ) Short Break : {} m
-           P ) Pomodoro's:  {} m
+
+           L ) Long Break : 10 m every 4 running Pomodoro's
+           SH ) Short Break : 5 m
+           P ) Pomodoro's:  25 m
            R ) To return to main menu
 
            Enter the settings symbol that you want to change .

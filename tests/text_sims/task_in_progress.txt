@@ -1,0 +1,4 @@
+
+            M) return main menu
+            R) return to select task
+            C) select task as complete

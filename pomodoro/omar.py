@@ -50,20 +50,21 @@ class ListOfOptions:
            P ) Pomodoro's:  {} m
            R ) To return to main menu
 
-           Enter the settings symbol that you want to change .
-           '''.format(l, sh, p)
+           Enter the settings symbol that you want to change .'''.format(l, sh, p)
 
         print(text)
+        return text
 
     def settings_selected(self, opt):
         ''''
         on edit selected option
         '''
-        print('''
-        Enter the new time for the Pomodoro section :  {} time in minutes
+        text = '''
+        Enter the new time for the {}section time in minutes
         press Enter to confirm your choice
-        R) To return to main menu
-            '''.format(opt))
+        R) To return to main menu'''.format(opt)
+        print(text)
+        return text
 
     def task_add(self):
         ''''
@@ -75,10 +76,9 @@ class ListOfOptions:
 
     def task_after_added(self):
         prGreen('''Task Added Successfully''')
-        print('''
+        text = '''
             V) View all the Tasks
-            R) To return to starting menu
-        ''')
+            R) To return to starting menu'''
 
     def view_list_of_tasks(self):
         '''
@@ -93,9 +93,7 @@ class ListOfOptions:
         print(
             '''
         )> Enter the task number to start.
-        R)> Return to main menu.
-            '''
-        )
+        R)> Return to main menu.''')
 
     def start_pomodoro(self, opt_func):
         '''
@@ -116,8 +114,7 @@ class ListOfOptions:
         '''
 
         text = '''
-        Time: {} minutes / long break {} minutes /short break {} minutes
-        '''.format(p, l, sh)
+        Time: {} minutes / long break {} minutes /short break {} minutes'''.format(p, l, sh)
         return text
 
     def no_tasks_founded(self):
@@ -126,8 +123,7 @@ class ListOfOptions:
         Do you want to add Task
         Press (A)
 
-        R) to return to main menu
-        ''')
+        R) to return to main menu''')
 
     # def break_timer(self):
     #     print(
@@ -144,9 +140,7 @@ class ListOfOptions:
             '''
             M) return main menu
             R) return to select task
-            C) select task as complete
-            '''
-        )
+            C) select task as complete''')
 
 
 class Body:
@@ -183,21 +177,21 @@ class Body:
         choice = choice.lower()
 
         if choice == 'sh':
-            self.options_list.settings_selected('Short break ')
+            self.options_list.settings_selected('short break ')
             user_in = input("Enter the break time :")
             if user_in == 'r':
                 self.settings()
             settings["short_break"] = int(user_in)
             self.settings()
         elif choice == 'l':
-            self.options_list.settings_selected('Long break ')
+            self.options_list.settings_selected('long break ')
             user_in = input("Enter the break time :")
             if user_in == 'r':
                 self.settings()
             settings["long_break"] = int(user_in)
             self.settings()
         elif choice == 'p':
-            self.options_list.settings_selected('Pomodoro break ')
+            self.options_list.settings_selected('pomodoro break ')
             user_in = input("Enter the pomodoro time : ")
             if user_in == 'r':
                 self.settings()
@@ -228,6 +222,9 @@ class InputHandler(Body):
             self.settings()
         elif choice == 'q':
             self.quit_pomodoro()
+        else:
+            print("Please make sure you entered a valid input")
+            self.welcoming_main_menu()
 
     def start_pomodoro(self):
         '''select task to work on, to update or to mark it as completed'''
