@@ -1,0 +1,4 @@
+
+        )> Enter the task number + C to mark the task as complete
+        )> Enter task number to start working on it
+        R) Return to starting menu

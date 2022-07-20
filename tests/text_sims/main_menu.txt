@@ -1,0 +1,8 @@
+
+           Welcome to Pomodoro
+           Please chose from the following:
+           S) To start Pomodoro
+           A) To add a task
+           V) View all tasks
+           ST) Settings
+           Q) Quit Pomodoro
