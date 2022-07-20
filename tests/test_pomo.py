@@ -8,10 +8,21 @@ from tests.flo import diff
 """
 This test will mock print the main menu
 """
-def test_print_main_menu():
-    ls = ListOfOptions()
-    diffs =diff(ls.main_menu,"tests/text_sims/main_menu.txt")
-    assert not diffs, diffs
+# def test_print_main_menu():
+#     ls = ListOfOptions()
+#     diffs =diff(ls.main_menu,"tests/text_sims/main_menu.txt")
+#     assert not diffs, diffs
+
+def test_print_main_menu(list_of_options):
+    assert list_of_options.main_menu() == '''
+               Welcome to Pomodoro
+               Please chose from the following:
+               S) To start Pomodoro
+               A) To add a task
+               V) View all tasks
+               ST) Settings
+               Q) Quit Pomodoro'''
+
 
 def test_settings_input(list_of_options):
     with mock.patch.object(builtins, 'input', lambda _: '10', '5', '25'):

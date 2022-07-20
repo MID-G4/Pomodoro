@@ -1,5 +1,5 @@
 import time
-import sys
+import sys, os
 try:
     from pomodoro.pomodoro_gui import *
 except:
@@ -29,14 +29,36 @@ class ListOfOptions:
         pass
 
     def main_menu(self):
-        print('''
-           Welcome to Pomodoro
-           Please chose from the following:
-           S) To start Pomodoro
-           A) To add a task
-           V) View all tasks
-           ST) Settings
-           Q) Quit Pomodoro''')
+        try:
+            os.system('cls')
+            frames = []
+            filename = ['welcome.txt']
+            for name in filename:
+                with open(name, 'r', encoding='utf-8') as f:
+                    frames.append(f.readlines())
+                # for i in range(1):
+                for frame in frames:
+                    prRed("".join(frame))
+                    time.sleep(0.1)
+                    os.system('cls')
+                    print('''
+                                   Welcome to Pomodoro
+                                   Please chose from the following:
+                                   S) To start Pomodoro
+                                   A) To add a task
+                                   V) View all tasks
+                                   ST) Settings
+                                   Q) Quit Pomodoro''')
+        except:
+            text = '''
+               Welcome to Pomodoro
+               Please chose from the following:
+               S) To start Pomodoro
+               A) To add a task
+               V) View all tasks
+               ST) Settings
+               Q) Quit Pomodoro'''
+            return text
 
 
     def settings(self, l, sh, p):
@@ -76,9 +98,10 @@ class ListOfOptions:
 
     def task_after_added(self):
         prGreen('''Task Added Successfully''')
-        text = '''
+        print('''
             V) View all the Tasks
-            R) To return to starting menu'''
+            R) To return to starting menu''')
+
 
     def view_list_of_tasks(self):
         '''
@@ -125,16 +148,6 @@ class ListOfOptions:
 
         R) to return to main menu''')
 
-    # def break_timer(self):
-    #     print(
-    #         '''
-    #         S) Start working on the task again
-    #         LB) Start the long break
-    #         M) return main menu
-    #         R) return to select task
-    #         '''
-    #     )
-
     def task_in_progress(self):
         print(
             '''
@@ -162,8 +175,6 @@ class Body:
     def welcoming_main_menu(self):
         self.options_list.main_menu()
         self.user_input_main_menu()
-
-    # create new method that will handle the input itself and do the testing
 
     def user_input_main_menu(self):
         choice = input("Enter your choice:")
@@ -264,7 +275,6 @@ class InputHandler(Body):
 
         if choice.lower() == 'r':
             self.start_pomodoro()
-        # will be implemented soon for edge cases
         else:
             print('Please make sure you entered valid input')
             self.after_task_added()
@@ -272,22 +282,17 @@ class InputHandler(Body):
     def view_all_tasks(self, task1):
         prRed('''To Do List''')
 
-        # for key, value in self.added_tasks.items():
-        #     print(" " + str(key) + " - " + value)
-        print(self.added_tasks)
+        for key, value in self.added_tasks.items():
+            print(" " + str(key) + " - " + value)
         ListOfOptions().view_list_of_tasks()
         choice = self.input_messenger('Enter your choice: >')
         if len(choice) > 1:
-            # if type(choice[0]) is str:
-            #     prRed('something went wrong')
-            #     self.view_all_tasks(self.added_tasks)
             if (int(choice[0]) in self.added_tasks) and (choice[1].lower() == 'c'):
                 self.completed_tasks[int(choice[0])] = self.added_tasks.get(int(choice[0]))
                 del self.added_tasks[int(choice[0])]
                 prGreen(''' Completed Tasks List:''')
-                print(self.completed_tasks)
-                # for key, value in self.completed_tasks.items():
-                #     print(" " + str(key) + " - " + value)
+                for key, value in self.completed_tasks.items():
+                    print(" " + str(key) + " - " + value)
                 self.view_all_tasks(self.added_tasks)
 
             else:
@@ -335,9 +340,8 @@ class InputHandler(Body):
             self.completed_tasks[task_number] = self.added_tasks.get(task_number)
             del self.added_tasks[task_number]
             prGreen(''' Completed Tasks List:''')
-            # for key, value in self.completed_tasks.items():
-            #     print(" " + str(key) + " - " + value)
-            print(self.completed_tasks)
+            for key, value in self.completed_tasks.items():
+                print(" " + str(key) + " - " + value)
             self.view_all_tasks(self.added_tasks)
 
         else:
