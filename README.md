@@ -14,7 +14,7 @@
 
 ## Summary of idea
 
-Its application that help you as a user to manage your time to  breaking down your works to sub-works ,you can manage your time to stay fresh and focused all the day.
+The project is a pomodoro application. Pomodoro technique is a time management system that encourages people to work with the time they have rather than against it.
 
 ## project management board
 

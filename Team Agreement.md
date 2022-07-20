@@ -69,18 +69,18 @@
 ## Git Process
 
 * What components of your project will live on GitHub?
-  * Yes on organization for our team all the project files and branches and there is no configuration files or private data in it.
+  * An organization for our team, that has all the project files and branches. There is no configuration files or private data in it.
 * How will you share the repository with your teammates?
-  * Through the organization feature on GitHub
+  * Through the organization feature on GitHub.
 * What is your Git flow?
-  * Work will be on branches of each feature
+  * Work will be on branches of each feature.
 * Will you be using a PR review workflow?
   * Yes
 * How many people must review a PR?
-  * 2 team members team leader and git repository owner
+  * 2 team members. The team leader and the owner of the repository.
 * Who merges PRs?
   * Repository owner.
 * How often will you merge?
   * on every completed feature.
 * How will you communicate that it’s time to merge?
-  * Through Whatsapp group and make sure to notify all members
+  * Through Whatsapp group and make sure to notify all members.
