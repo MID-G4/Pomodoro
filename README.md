@@ -22,7 +22,7 @@ The project is a pomodoro application. Pomodoro technique is a time management s
 
 ## Wireframe & Domain Modeling
 
-[Wireframe](https://miro.com/app/board/uXjVOoaywEA=/?share_link_id=650851568622)
+[Wireframe](https://miro.com/app/board/uXjVOkuXxQc=/?fbclid=IwAR1JwXJMTZ2VQDjY1AffN5NmiNzTR_22ytMtnFAJX5XZFAgU8JlD212WBZ4)
 
 ## Software Requirements
 
