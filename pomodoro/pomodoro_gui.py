@@ -2,6 +2,7 @@ import time
 import threading
 import tkinter as tk
 from tkinter import ttk, PhotoImage
+from playsound import playsound
 
 
 class PomodoroTimer:
@@ -60,6 +61,8 @@ class PomodoroTimer:
             t = threading.Thread(target=self.start_timer)
             t.start()
             self.running = True
+            playsound("sound1.wav")
+
 
     # def start_timer(self,pomo=25,lb=15, sh=5):
     def start_timer(self):
@@ -67,6 +70,7 @@ class PomodoroTimer:
         self.stopped = False
         self.skipped = False
         timer_id = self.tabs.index(self.tabs.select()) + 1
+        # playsound("sound1.wav")
 
         if timer_id == 1:
             full_seconds = 60 * self.settings['pomo']
@@ -84,6 +88,7 @@ class PomodoroTimer:
                 else:
                     self.tabs.select(1)
                 self.start_timer()
+                # playsound("sound1.mp3")
         elif timer_id == 2:
             full_seconds = 60 * self.settings['short_break']
             while full_seconds > 0 and not self.stopped:
@@ -97,6 +102,7 @@ class PomodoroTimer:
                 self.start_timer()
         elif timer_id == 3:
             full_seconds = 60 * self.settings['long_break']
+
             while full_seconds > 0 and not self.stopped:
                 minutes, seconds = divmod(full_seconds, 60)
                 self.long_break_timer_label.configure(text=f"{minutes:02d}:{seconds:02d}")
@@ -106,8 +112,10 @@ class PomodoroTimer:
             if not self.stopped or self.skipped:
                 self.tabs.select(0)
                 self.start_timer()
+
         else:
             print("Invalid timer id")
+
 
     def reset_clock(self):
         self.stopped = True
@@ -118,6 +126,7 @@ class PomodoroTimer:
         self.long_break_timer_label.config(text=self.settings['long_break'])
         self.pomodoro_counter_label.config(text="Pomodoros: 0")
         self.running = False
+
 
     def skip_clock(self):
         current_tab = self.tabs.index(self.tabs.select())
@@ -130,5 +139,7 @@ class PomodoroTimer:
 
         self.stopped = True
         self.skipped = True
+        playsound("sound2.wav")
+
 
 # PomodoroTimer()
