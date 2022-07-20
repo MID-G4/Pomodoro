@@ -2,7 +2,7 @@ import pytest
 import difflib
 import mock
 import builtins
-from pomodoro.omar import *
+from pomodoro.main import *
 from tests.flo import diff
 
 """
